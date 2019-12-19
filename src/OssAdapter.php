@@ -8,10 +8,6 @@ use OSS\Core\OssException;
 use OSS\OssClient;
 
 /**
- * @method array putObjectAcl(string $bucket, string $object, string $acl)
- * @method array copyObject(string $fromBucket, string $fromObject, string $toBucket, string $toObject, array $options = NULL)
- * @method string|false getObjectAcl(string $bucket, string $object)
- * @method \OSS\Model\ObjectListInfo|false listObjects($bucket, $options = NULL)
  * @mixin OssClient
  */
 class OssAdapter extends AbstractAdapter
@@ -131,13 +127,13 @@ class OssAdapter extends AbstractAdapter
             $options[OssClient::OSS_LENGTH] = $size = strlen($contents);
         }
 
-        $response = $this->putObject($this->bucket, $object, $contents, $options);
-
-        if ($response !== false) {
-            return ['path' => $path, 'size' => $size, 'type' => 'file'];
+        try {
+            $this->client->putObject($this->bucket, $object, $contents, $options);
+        } catch (OssException $e) {
+            return false;
         }
 
-        return false;
+        return ['path' => $path, 'size' => $size, 'type' => 'file'];
     }
 
     /**
@@ -146,12 +142,17 @@ class OssAdapter extends AbstractAdapter
      * @param  \League\Flysystem\Config $config
      * @return array
      */
-    protected function getOptions(Config $config)
+    protected function getOptions(Config $config = null)
     {
-        $headers = array_merge($this->options, $config->get(OssClient::OSS_HEADERS, []));
+        $headers = $this->options;
 
-        if ($visibility = $config->get('visibility')) {
-            $headers[OssClient::OSS_OBJECT_ACL] = static::visibilityToAcl($visibility);
+        if ($config !== null) {
+
+            $headers = array_merge($headers, $config->get(OssClient::OSS_HEADERS, []));
+
+            if ($visibility = $config->get('visibility')) {
+                $headers[OssClient::OSS_OBJECT_ACL] = static::visibilityToAcl($visibility);
+            }
         }
 
         if (!empty($headers)) {
@@ -214,18 +215,17 @@ class OssAdapter extends AbstractAdapter
     {
         $object = $this->applyPathPrefix($path);
 
-        /**@var string|false $response */
-        $response = $this->getObject($this->bucket, $object);
-
-        if ($response !== false) {
-            return [
-                'contents' => $response,
-                'path' => $path,
-                'type' => 'file'
-            ];
+        try {
+            $content = $this->client->getObject($this->bucket, $object);
+        } catch (OssException $e) {
+            return false;
         }
 
-        return $response;
+        return [
+            'contents' => $content,
+            'path' => $path,
+            'type' => 'file'
+        ];
     }
 
     /**
@@ -239,18 +239,21 @@ class OssAdapter extends AbstractAdapter
     {
         $object = $this->applyPathPrefix($path);
 
-        /**@var string|false $response */
-        $response = $this->getObject($this->bucket, $object);
-
-        if ($response !== false) {
-            return [
-                'stream' => $this->createStreamFromString($response),
-                'path' => $path,
-                'type' => 'file'
-            ];
+        try {
+            $content = $this->client->getObject($this->bucket, $object);
+        } catch (OssException $e) {
+            return false;
         }
 
-        return $response;
+        if (($stream = $this->createStreamFromString($content)) === false) {
+            return false;
+        }
+
+        return [
+            'stream' => $stream,
+            'path' => $path,
+            'type' => 'file'
+        ];
     }
 
     /**
@@ -301,10 +304,15 @@ class OssAdapter extends AbstractAdapter
     public function copy($path, $newpath)
     {
         $object = $this->applyPathPrefix($path);
-
         $newObject = $this->applyPathPrefix($newpath);
 
-        return (bool) $this->copyObject($this->bucket, $object, $this->bucket, $newObject);
+        try {
+            $this->client->copyObject($this->bucket, $object, $this->bucket, $newObject, $this->getOptions());
+        } catch (OssException $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -361,16 +369,15 @@ class OssAdapter extends AbstractAdapter
     public function createDir($dirname, Config $config)
     {
         $object = $this->applyPathPrefix($dirname);
-
         $options = $this->getOptions($config);
 
-        $response = $this->createObjectDir($this->bucket, $object, $options);
-
-        if ($response !== false) {
-            return ['path' => $dirname, 'type' => 'dir'];
+        try {
+            $this->client->createObjectDir($this->bucket, $object, $options);
+        } catch (OssException $e) {
+            return false;
         }
 
-        return $response;
+        return ['path' => $dirname, 'type' => 'dir'];
     }
 
     /**
@@ -384,26 +391,19 @@ class OssAdapter extends AbstractAdapter
     {
         $object = $this->applyPathPrefix($path);
 
-        $response = $this->getObjectMeta($this->bucket, $object);
-
-        if ($response !== false) {
-
-            $isDir = substr($path, -1) === '/';
-            $results = [
-                'path' => $path,
-                'type' => ($isDir ? 'dir' : 'file'),
-                'mimetype' => $response['content-type']
-            ];
-
-            if ( ! $isDir) {
-                $results['size'] = $response['content-length'];
-                $results['timestamp'] = strtotime($response['last-modified']);
-            }
-
-            return $results;
+        try {
+            $response = $this->client->getObjectMeta($this->bucket, $object);
+        } catch (OssException $e) {
+            return false;
         }
 
-        return $response;
+        return [
+            'path' => $path,
+            'size' => $response['content-length'],
+            'timestamp' => strtotime($response['last-modified']),
+            'type' => (substr($path, -1) === '/' ? 'dir' : 'file'),
+            'mimetype' => $response['content-type']
+        ];
     }
 
     /**
@@ -453,16 +453,16 @@ class OssAdapter extends AbstractAdapter
     {
         $object = $this->applyPathPrefix($path);
 
-        $response = $this->getObjectAcl($this->bucket, $object);
-
-        if ($response !== false) {
-            return [
-                'path' => $path,
-                'visibility' => $this->aclToVisibility($response)
-            ];
+        try {
+            $acl = $this->client->getObjectAcl($this->bucket, $object);
+        } catch (OssException $e) {
+            return false;
         }
 
-        return $response;
+        return [
+            'path' => $path,
+            'visibility' => static::aclToVisibility($acl)
+        ];
     }
 
     /**
@@ -491,16 +491,15 @@ class OssAdapter extends AbstractAdapter
     public function setVisibility($path, $visibility)
     {
         $object = $this->applyPathPrefix($path);
+        $acl = static::visibilityToAcl($visibility);
 
-        $acl = $this->visibilityToAcl($visibility);
-
-        $response = $this->putObjectAcl($this->bucket, $object, $acl);
-
-        if ($response !== false) {
-            return ['path' => $path, 'visibility' => $visibility];
+        try {
+            $this->client->putObjectAcl($this->bucket, $object, $acl);
+        } catch (OssException $e) {
+            return false;
         }
 
-        return $response;
+        return ['path' => $path, 'visibility' => $visibility];
     }
 
     /**
@@ -577,9 +576,10 @@ class OssAdapter extends AbstractAdapter
         ];
 
         do {
-            $info = $this->listObjects($this->bucket, $options);
 
-            if ($info === false) {
+            try {
+                $info = $this->listObjects($this->bucket, $options);
+            } catch (OssException $e) {
                 return false;
             }
 
@@ -607,10 +607,6 @@ class OssAdapter extends AbstractAdapter
      */
     public function __call($name, $arguments)
     {
-        try {
-            return call_user_func_array([$this->client, $name], $arguments);
-        } catch (OssException $e) {
-            return false;
-        }
+        return call_user_func_array([$this->client, $name], $arguments);
     }
 }
