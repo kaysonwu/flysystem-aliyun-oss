@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
 use OSS\OssClient;
 
-class OsserviceProvider extends ServiceProvider
+class OssServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.

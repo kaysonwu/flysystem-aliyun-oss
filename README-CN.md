@@ -34,7 +34,7 @@ composer require kaysonwu/flysystem-aliyun-oss
 
     ...
 
-    Kaysonwu\Flysystem\Aliyun\OsserviceProvider::class,
+    Kaysonwu\Flysystem\Aliyun\OssServiceProvider::class,
 ]
 ```
 
@@ -46,7 +46,7 @@ composer require kaysonwu/flysystem-aliyun-oss
 ...
 
 // Add this line
-$app->register(Kaysonwu\Flysystem\Aliyun\OsserviceProvider::class);
+$app->register(Kaysonwu\Flysystem\Aliyun\OssServiceProvider::class);
 ```
 
 ##### Laravel/Lumen 的配置

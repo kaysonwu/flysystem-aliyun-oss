@@ -34,7 +34,7 @@ If your laravel version `<=5.4`, Add the service provider to the `providers` arr
 
     ...
 
-    Kaysonwu\Flysystem\Aliyun\OsserviceProvider::class,
+    Kaysonwu\Flysystem\Aliyun\OssServiceProvider::class,
 ]
 ```
 
@@ -46,7 +46,7 @@ Add the following snippet to the `bootstrap/app.php` file under the providers se
 ...
 
 // Add this line
-$app->register(Kaysonwu\Flysystem\Aliyun\OsserviceProvider::class);
+$app->register(Kaysonwu\Flysystem\Aliyun\OssServiceProvider::class);
 ```
 
 ##### Config for Laravel/Lumen
