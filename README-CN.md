@@ -4,26 +4,26 @@
 [![Packagist Version](https://img.shields.io/packagist/v/kaysonwu/flysystem-aliyun-oss.svg?style=flat-square)](https://packagist.org/packages/kaysonwu/flysystem-aliyun-oss)
 [![Total Downloads](https://img.shields.io/packagist/dt/kaysonwu/flysystem-aliyun-oss.svg?style=flat-square)](https://packagist.org/packages/kaysonwu/flysystem-aliyun-oss)
 
-[使用中文阅读](https://github.com/kaysonwu/aliyun-oss/blob/master/README-CN.md)
+[README of English](https://github.com/kaysonwu/aliyun-oss/blob/master/README.md)
 
 ## Advantages
 
 1. Support Laravel & Lumen
 2. Compared with [xxtime/flysystem-aliyun-oss](https://github.com/xxtime/flysystem-aliyun-oss), it is more in line with the [flysystem](https://flysystem.thephpleague.com/docs/architecture/) interface specification. Because the flysystem interface suggests that the return value is array or bool, but [xxtime/flysystem-aliyun-oss](https://github.com/xxtime/flysystem-aliyun-oss) is not very strict about exception handling.
 
-## Installation
+## 安装
 
-#### Install via composer
+#### 使用 Composer 安装
 
-Run the following command to pull in the latest version:
+运行以下命令获取最新版本：
 
 ```bash
 composer require kaysonwu/flysystem-aliyun-oss
 ```
 
-#### Laravel Install
+#### Laravel 安装
 
-If your laravel version `<=5.4`, Add the service provider to the `providers` array in the `config/app.php` config file as follows:
+如果你的 laravel 版本 `<=5.4`, 请将服务提供者添加到 `config/app.php` 配置文件中的 `providers` 数组中，如下所示:
 
 ```php
 'providers' => [
@@ -34,9 +34,9 @@ If your laravel version `<=5.4`, Add the service provider to the `providers` arr
 ]
 ```
 
-##### Lumen Install
+##### Lumen 安装
 
-Add the following snippet to the `bootstrap/app.php` file under the providers section as follows:
+将以下代码片段添加到 `bootstrap/app.php` 文件中的 `providers` 部分位置，如下所示：
 
 ```php
 ...
@@ -45,9 +45,9 @@ Add the following snippet to the `bootstrap/app.php` file under the providers se
 $app->register(Kaysonwu\Flysystem\Aliyun\OsserviceProvider::class);
 ```
 
-##### Config for Laravel/Lumen
+##### Laravel/Lumen 的配置
 
-Add the adapter config to the `disks` array in the `config/filesystems.php` config file as follows:
+将适配器配置添加到 `config/filesystems.php` 配置文件中的 `disks` 数组，如下所示：
 
 ```php
 
@@ -107,11 +107,11 @@ Add the adapter config to the `disks` array in the `config/filesystems.php` conf
 ]
 ```
 
-## Usage
+## 使用
 
-##### Basic
+##### 基本
 
-Please refer to [filesystem-api](https://flysystem.thephpleague.com/docs/usage/filesystem-api/).
+更详细的 API 请参考 [filesystem-api](https://flysystem.thephpleague.com/docs/usage/filesystem-api/) 文档
 
 ```php
 use Kaysonwu\Flysystem\Aliyun\OssAdapter;
@@ -136,7 +136,7 @@ $adapter->setTimeout(30);
 
 ##### Laravel/Lumen
 
-Please refer to [filesystem](https://laravel.com/docs/6.x/filesystem)
+更新详细的使用请参考 Laravel 的[文件存储](https://learnku.com/docs/laravel/6.x/filesystem/5163) 文档
 
 ```php
 use Illuminate\Support\Facades\Storage;
