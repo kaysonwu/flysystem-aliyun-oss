@@ -1,8 +1,8 @@
-## League\Flysystem\Aliyun-OSS
+## Kaysonwu\Flysystem\Aliyun-OSS
 [![Author](http://img.shields.io/badge/author-@kaysonWu-blue.svg?style=flat-square)](https://github.com/kaysonwu)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Packagist Version](https://img.shields.io/packagist/v/league/flysystem-aliyun-oss.svg?style=flat-square)](https://packagist.org/packages/league/flysystem-aliyun-oss)
-[![Total Downloads](https://img.shields.io/packagist/dt/league/flysystem-aliyun-oss.svg?style=flat-square)](https://packagist.org/packages/league/flysystem-aliyun-oss)
+[![Packagist Version](https://img.shields.io/packagist/v/kaysonwu/flysystem-aliyun-oss.svg?style=flat-square)](https://packagist.org/packages/kaysonwu/flysystem-aliyun-oss)
+[![Total Downloads](https://img.shields.io/packagist/dt/kaysonwu/flysystem-aliyun-oss.svg?style=flat-square)](https://packagist.org/packages/kaysonwu/flysystem-aliyun-oss)
 
 ## Advantages
 
@@ -16,7 +16,7 @@
 Run the following command to pull in the latest version:
 
 ```bash
-composer require league/flysystem-aliyun-oss
+composer require kaysonwu/flysystem-aliyun-oss
 ```
 
 #### Laravel Install
@@ -28,7 +28,7 @@ If your laravel version `<=5.4`, Add the service provider to the `providers` arr
 
     ...
 
-    League\Flysystem\Aliyun\OsserviceProvider::class,
+    Kaysonwu\Flysystem\Aliyun\OsserviceProvider::class,
 ]
 ```
 
@@ -40,7 +40,7 @@ Add the following snippet to the `bootstrap/app.php` file under the providers se
 ...
 
 // Add this line
-$app->register(League\Flysystem\Aliyun\OsserviceProvider::class);
+$app->register(Kaysonwu\Flysystem\Aliyun\OsserviceProvider::class);
 ```
 
 ##### Config
@@ -112,8 +112,9 @@ Add the adapter config to the `disks` array in the `config/filesystems.php` conf
 Please refer to [filesystem-api](https://flysystem.thephpleague.com/docs/usage/filesystem-api/).
 
 ```php
+use Kaysonwu\Flysystem\Aliyun\OssAdapter;
 use League\Flysystem\Filesystem;
-use League\Flysystem\Aliyun\OssAdapter;
+use OSS\OssClient;
 
 $client = new OssClient(
     '<your AccessKeyId>',
@@ -136,6 +137,8 @@ $adapter->setTimeout(30);
 Please refer to [filesystem](https://laravel.com/docs/6.x/filesystem)
 
 ```php
+use Illuminate\Support\Facades\Storage;
+
 Storage::disk('aliyun-oss')->get('path');
 
 // Dynamic call SDK method.

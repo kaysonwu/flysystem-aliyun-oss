@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Flysystem\Aliyun;
+namespace Kaysonwu\Flysystem\Aliyun;
 
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Config;

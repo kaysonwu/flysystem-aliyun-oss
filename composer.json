@@ -1,5 +1,5 @@
 {
-    "name": "league/flysystem-aliyun-oss",
+    "name": "kaysonwu/flysystem-aliyun-oss",
     "description": "Flysystem adapter for the Aliyun OSS SDK",
     "keywords": [
         "filesystem", "aliyun oss", "laravel", "lumen"
@@ -22,13 +22,13 @@
     },
     "autoload": {
         "psr-4": {
-            "League\\Flysystem\\Aliyun\\": "src/"
+            "Kaysonwu\\Flysystem\\Aliyun\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "League\\Flysystem\\Aliyun\\OssServiceProvider"
+                "Kaysonwu\\Flysystem\\Aliyun\\OssServiceProvider"
             ]
         }
     }

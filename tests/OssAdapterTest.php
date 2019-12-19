@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use League\Flysystem\Aliyun\OssAdapter as Adapter;
+use Kaysonwu\Flysystem\Aliyun\OssAdapter as Adapter;
 use League\Flysystem\Config;
 use Mockery;
 use OSS\Core\OssException;

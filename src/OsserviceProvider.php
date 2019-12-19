@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Flysystem\Aliyun;
+namespace Kaysonwu\Flysystem\Aliyun;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
