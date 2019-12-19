@@ -286,4 +286,15 @@ class OssAdapterTest extends TestCase
         $this->assertInternalType('array', $response);
         $this->assertCount(0, $response);
     }
+
+    public function testCall()
+    {
+        $client = $this->getClient();
+        $adapter = new Adapter($client, 'bucket');
+
+        $client->shouldReceive('createBucket')->once()->andReturn(true);
+        $response = $adapter->createBucket('bucket', Adapter::VISIBILITY_PUBLIC_READ_WRITE);
+
+        $this->assertTrue($response);
+    }
 }
