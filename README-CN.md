@@ -135,7 +135,7 @@ $filesystem->has('file.txt');
 
 // Dynamic call SDK method.
 $adapter->setTimeout(30);
-
+$filesystem->getAdapter()->setTimeout(30);
 ```
 
 ##### Laravel/Lumen
@@ -148,5 +148,5 @@ use Illuminate\Support\Facades\Storage;
 Storage::disk('aliyun-oss')->get('path');
 
 // Dynamic call SDK method.
-Storage::disk('aliyun-oss')->setTimeout(30);
+Storage::disk('aliyun-oss')->getAdapter()->setTimeout(30);
 ```
