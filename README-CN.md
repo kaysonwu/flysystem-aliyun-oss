@@ -6,10 +6,14 @@
 
 [README of English](https://github.com/kaysonwu/aliyun-oss/blob/master/README.md)
 
-## Advantages
+## 优势
 
-1. Support Laravel & Lumen
-2. Compared with [xxtime/flysystem-aliyun-oss](https://github.com/xxtime/flysystem-aliyun-oss), it is more in line with the [flysystem](https://flysystem.thephpleague.com/docs/architecture/) interface specification. Because the flysystem interface suggests that the return value is array or bool, but [xxtime/flysystem-aliyun-oss](https://github.com/xxtime/flysystem-aliyun-oss) is not very strict about exception handling.
+1. 支持 Laravel & Lumen
+2. 相比 [xxtime/flysystem-aliyun-oss](https://github.com/xxtime/flysystem-aliyun-oss), 更符合 [flysystem](https://flysystem.thephpleague.com/docs/architecture/) 接口规范. 因为 flysystem 接口期望的返回是 **数组** 或 **布尔型**, 但是 [xxtime/flysystem-aliyun-oss <= 1.5.0](https://github.com/xxtime/flysystem-aliyun-oss) 对异常处理不是很完善
+3. 相比 [apollopy/flysystem-aliyun-oss <= 1.2.0](https://github.com/apollopy/flysystem-aliyun-oss) 支持可见性设置
+4. 支持动态调用 OSS SDK 方法
+
+**ps:** 同类项目比较仅为突出不同，实际上他们都非常的优秀
 
 ## 安装
 

@@ -10,6 +10,10 @@
 
 1. Support Laravel & Lumen
 2. Compared with [xxtime/flysystem-aliyun-oss](https://github.com/xxtime/flysystem-aliyun-oss), it is more in line with the [flysystem](https://flysystem.thephpleague.com/docs/architecture/) interface specification. Because the flysystem interface suggests that the return value is array or bool, but [xxtime/flysystem-aliyun-oss](https://github.com/xxtime/flysystem-aliyun-oss) is not very strict about exception handling.
+3. Compared to [apollopy/flysystem-aliyun-oss <= 1.2.0](https://github.com/apollopy/flysystem-aliyun-oss) supports visibility get/set.
+4. Support Dynamically call OSS SDK methods.
+
+**ps:** The comparison of similar projects is only to highlight the differences. In fact, they are all very good.
 
 ## Installation
 
