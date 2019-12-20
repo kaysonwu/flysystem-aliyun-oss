@@ -626,7 +626,7 @@ class OssAdapter extends AbstractAdapter
      * @param  string $path
      * @return string
      */
-    public function url($path)
+    public function getUrl($path)
     {
         return $this->domain . $this->applyPathPrefix($path);
     }

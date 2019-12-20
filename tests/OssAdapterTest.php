@@ -287,15 +287,15 @@ class OssAdapterTest extends TestCase
         $this->assertCount(0, $response);
     }
 
-    public function testUrl()
+    public function testGetUrl()
     {
         $client = $this->getClient();
 
         $domain = 'https://cdn.domain.com/';
         $adapter = new Adapter($client, 'bucket', $domain);
 
-        $this->assertEquals($domain.'file.txt', $adapter->url('file.txt'));
-        $this->assertEquals($domain, $adapter->url(''));
+        $this->assertEquals($domain.'file.txt', $adapter->getUrl('file.txt'));
+        $this->assertEquals($domain, $adapter->getUrl(''));
     }
 
     public function testTemporaryUrl()
