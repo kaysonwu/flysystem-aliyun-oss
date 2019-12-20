@@ -287,6 +287,31 @@ class OssAdapterTest extends TestCase
         $this->assertCount(0, $response);
     }
 
+    public function testUrl()
+    {
+        $client = $this->getClient();
+
+        $domain = 'https://cdn.domain.com/';
+        $adapter = new Adapter($client, 'bucket', $domain);
+
+        $this->assertEquals($domain.'file.txt', $adapter->url('file.txt'));
+        $this->assertEquals($domain, $adapter->url(''));
+    }
+
+    public function testTemporaryUrl()
+    {
+        $client = $this->getClient();
+        $adapter = new Adapter($client, 'bucket');
+
+        $url = 'http://cdn.domain.com/file.txt?OSSAccessKeyId=LTAI4FwjVCdV3y3ctaVmeRrG&Expires=1576842003&Signature=iF9oB04tRr0TVywhEWHYGqJsXHE%3D';
+
+        $client->shouldReceive('signUrl')->once()->andReturn($url);
+        $this->assertEquals($url, $adapter->temporaryUrl('file.txt', 30));
+
+        $client->shouldReceive('signUrl')->once()->andThrow(OssException::class);
+        $this->assertFalse($adapter->temporaryUrl('missing.txt', 30));
+    }
+
     public function testCall()
     {
         $client = $this->getClient();

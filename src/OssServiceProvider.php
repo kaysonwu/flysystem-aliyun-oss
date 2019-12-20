@@ -21,15 +21,21 @@ class OssServiceProvider extends ServiceProvider
             $client = @new OssClient(
                 $config['key'],
                 $config['secret'],
-                $config['endpoint'],
+                ($url = $config['endpoint']),
                 $config['cname'],
                 $config['token']
             );
 
+            if (isset($config['url'])) {
+                $url = $config['url'];
+            } elseif ($config['cname'] === false) {
+                $url = '';
+            }
+
             $prefix = isset($config['prefix']) ? $config['prefix'] : '';
             $options = isset($config['options']) ? $config['options'] : [];
 
-            return new Filesystem(new OssAdapter($client, $config['bucket'], $prefix, $options));
+            return new Filesystem(new OssAdapter($client, $config['bucket'], $url, $prefix, $options));
         });
     }
 }

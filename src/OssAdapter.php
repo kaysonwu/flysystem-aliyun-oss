@@ -2,6 +2,7 @@
 
 namespace Kaysonwu\Flysystem\Aliyun;
 
+use DateTimeInterface;
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Config;
 use OSS\Core\OssException;
@@ -46,19 +47,27 @@ class OssAdapter extends AbstractAdapter
     protected $options;
 
     /**
+     * The external domain name for OSS bucket.
+     *
+     * @var string
+     */
+    protected $domain;
+
+    /**
      * Create a new AliOSS adapter instance.
      *
      * @param  OssClient $client
      * @param  string $bucket
+     * @param  string $domain
      * @param  string $prefix
      * @param  array $options
      * @return void
      */
-    public function __construct(OssClient $client, $bucket, $prefix = null, array $options = [])
+    public function __construct(OssClient $client, $bucket, $domain = null, $prefix = null, array $options = [])
     {
         $this->client = $client;
         $this->options = $options;
-        $this->setBucket($bucket)->setPathPrefix($prefix);
+        $this->setBucket($bucket)->setDomain($domain)->setPathPrefix($prefix);
     }
 
     /**
@@ -596,6 +605,67 @@ class OssAdapter extends AbstractAdapter
         } while(($options['marker'] = $info->getNextMarker()) !== '');
 
         return true;
+    }
+
+    /**
+     * Set the external domain name for OSS bucket.
+     *
+     * @param  string $domain
+     * @return $this
+     */
+    public function setDomain($domain)
+    {
+        $this->domain = rtrim($domain, '/') . '/';
+
+        return $this;
+    }
+
+    /**
+     * Get the URL for the file at the given path.
+     *
+     * @param  string $path
+     * @return string
+     */
+    public function url($path)
+    {
+        return $this->domain . $this->applyPathPrefix($path);
+    }
+
+    /**
+     * Get a temporary URL for the file at the given path.
+     *
+     * @param  string $path
+     * @param  \DateTimeInterface|int $expiration
+     * @param  array $options
+     * @return string|false
+     */
+    public function temporaryUrl($path, $expiration, array $options = [])
+    {
+        $object = $this->applyPathPrefix($path);
+        $timeout = $this->normalizeTimeout($expiration);
+
+        try {
+            $url = $this->client->signUrl($this->bucket, $object, $timeout, OssClient::OSS_HTTP_GET, $options);
+        } catch (OssException $e) {
+            return false;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Normalize a timeout from expiration.
+     *
+     * @param  \DateTimeInterface|int $expiration
+     * @return int
+     */
+    protected function normalizeTimeout($expiration)
+    {
+        if ($expiration instanceof DateTimeInterface) {
+            return $expiration->getTimestamp() - time();
+        }
+
+        return $expiration;
     }
 
     /**
